@@ -15,7 +15,7 @@ from algos.SPOT import train_SPOT
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--seed", default=[0, 1, 2, 3, 4])                           # Sets Gym, PyTorch and Numpy seeds
+    parser.add_argument("--seed", default=[0, 1, 2, 3, 4])               # Sets Gym, PyTorch and Numpy seeds
     parser.add_argument("--device", type=str, default='cuda')            # Device
     parser.add_argument('--train_on_server', type=bool, default=False)   # Train on server or PC
 
@@ -99,8 +99,6 @@ if __name__ == "__main__":
     # ----------------------------------- Replay Buffer and Eval Env ----------------------------------#
     replay_buffer = ReplayBuffer(state_dim, action_dim, len(dataset["observations"]), args.device)
     state_mean, state_std = replay_buffer.load_d4rl_dataset(dataset)
-    # state = replay_buffer._states[20]
-    # action = replay_buffer._actions[20]
     eval_env = wrap_env(gym.make(args.env_name), state_mean, state_std)
 
     # ----------------------------------- Different Seeds Training ----------------------------------#
