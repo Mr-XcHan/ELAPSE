@@ -157,7 +157,6 @@ class BNVAE(nn.Module):
         mean = self.mean(z)
         mean = self.bn_mean(mean)
         # Clamped for numerical stability
-        # log_std = self.log_std(z).clamp(-4, 15)
         log_std = self.log_std(z).clamp(-4, 4)
         std = torch.exp(log_std)
         # std = self.bn_std(log_std)
@@ -328,28 +327,9 @@ class LAPO(object):
                     current_v = self.critic.v(state)
                     current_q = self.lmbda * torch.min(current_Q1, current_Q2) + (1 - self.lmbda) \
                                    * torch.max(current_Q1, current_Q2)
-
-                    # latent_target_action = self.actor_target(state)
-                    # noise = (torch.randn_like(latent_target_action) * self.policy_noise).clamp(
-                    #     -0.2 * self.max_action, 0.2 * self.max_action)
-                    # latent_target_action += noise
-                    # decode_action = self.vae_target.decode(state, z=latent_target_action)
-                    # target_Q1, target_Q2 = self.critic_target(state, decode_action)
-                    # target_v = self.lmbda * torch.min(target_Q1, target_Q2) + (1 - self.lmbda) \
-                    #            * torch.max(target_Q1, target_Q2)
-                    # q_action = reward + (1 - done) * self.gamma * next_q
                     adv = (current_q - current_v)
 
                     weights = torch.where(adv > 0, self.expectile, 1 - self.expectile)
-
-                    # train weighted CVAE - annealing
-                    # if args.kl_annealing:
-                    #     if (i * args.save_freq + i_ite) / (args.AC_iteration * 0.5) < 1:
-                    #         kl_weight = args.vae_kl_weight * (i * args.save_freq + i_ite) / (args.AC_iteration * 0.5)
-                    #     else:
-                    #         kl_weight = args.vae_kl_weight
-                    # else:
-                    #     kl_weight = args.vae_kl_weight
 
                     # train weighted CVAE - cyclical annealing
                     if args.kl_annealing:
