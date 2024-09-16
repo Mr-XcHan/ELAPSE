@@ -1,7 +1,3 @@
-# TODO 对于迷宫类任务，还可以绘制路线图(参考论文).
-
-# antmaze-large-diverse-v1
-
 import os
 import argparse
 from logger import setup_logger
