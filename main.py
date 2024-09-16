@@ -15,7 +15,7 @@ from algos.SPOT import train_SPOT
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--seed", default=[0])                           # Sets Gym, PyTorch and Numpy seeds
+    parser.add_argument("--seed", default=[0, 1, 2, 3, 4])                           # Sets Gym, PyTorch and Numpy seeds
     parser.add_argument("--device", type=str, default='cuda')            # Device
     parser.add_argument('--train_on_server', type=bool, default=False)   # Train on server or PC
 
