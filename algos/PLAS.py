@@ -1,5 +1,3 @@
-# TODO 现在用的那个batchnorm出现nan问题，明天检查一下.
-
 import time
 import os
 from tqdm import tqdm
@@ -140,7 +138,6 @@ class BNVAE(nn.Module):
         mean = self.mean(z)
         mean = self.bn_mean(mean)
         # Clamped for numerical stability
-        # log_std = self.log_std(z).clamp(-4, 15)
         log_std = self.log_std(z).clamp(-4, 4)
         std = torch.exp(log_std)
         # std = self.bn_std(log_std)
@@ -274,13 +271,6 @@ class VAEModule(object):
         self.vae_optimizer.zero_grad()
 
         vae_loss.backward()
-        # for name, parms in self.vae.bn_std.named_parameters():
-        #     # for grad in parms.grad.data:
-        #     #     if torch.abs(grad) < 1e-4:
-        #     #         parms.grad.data = torch.zeros(parms.grad, device=self.device, requires_grad=True)
-        #     #         break
-        #
-        #     assert torch.isnan(parms).sum() == 0, print('-->name:', name, '-->weight:', parms.data, ' -->grad_value:', parms.grad)
 
         self.vae_optimizer.step()
         return vae_loss.item(), recon_loss.item(), KL_loss.item()
@@ -398,8 +388,6 @@ class Latent(object):
             state, done = eval_env.reset(), False
             while not done:
                 state = torch.tensor(state, dtype=torch.float32, device=self.device).view(1, -1)
-                # latent_action = torch.tensor(np.random.uniform(-2, 2, size=(1, self.latent_dim)), dtype=torch.float32,
-                #                              device=self.device)
                 latent_action = self.actor(state)
                 action = self.vae.decode(state, z=latent_action).cpu().data.numpy().flatten()
                 next_state, reward, done, env_infos = eval_env.step(action)
