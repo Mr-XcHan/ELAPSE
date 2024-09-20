@@ -323,7 +323,6 @@ class LAPO(object):
                     self.critic_optimizer.step()
 
                     # compute adv and weight
-                    # TODO 这里current_q与源代码的不同.
                     current_v = self.critic.v(state)
                     current_q = self.lmbda * torch.min(current_Q1, current_Q2) + (1 - self.lmbda) \
                                    * torch.max(current_Q1, current_Q2)
